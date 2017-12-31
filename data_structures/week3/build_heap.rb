@@ -13,13 +13,13 @@ def sift_down(i, arr, swaps)
 	min = i
 
 	left_id  = (2*i) + 1
-	if left_id <= arr.size-1 && arr[left_id] < arr[i]
+	if left_id <= arr.size-1 && arr[left_id] < arr[min]
 		min = left_id
 	end
 
 	right_id = (2*i) + 2 
-	if right_id <= arr.size-1 && arr[right_id] < arr[i]
-		min = right_id unless arr[min] < arr[right_id]
+	if right_id <= arr.size-1 && arr[right_id] < arr[min]
+		min = right_id
 	end
 
 	if i != min
