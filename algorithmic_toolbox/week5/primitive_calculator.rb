@@ -1,32 +1,57 @@
+require 'pry'
 
-# calculate num of steps
-# print intermediate values
-def divide_by(x, y)
-  x / y.to_f
+OPERATIONS = [
+  [:divide, 2.0],
+  [:divide, 3.0],
+  [:subtract, 1]
+]
+
+# sub problem
+def divide(x, y)
+  x / y
 end
 
-def minus_one(current_value)
-  current_value - 1
+def subtract(x, y)
+  x - y
 end
 
-def calculate_steps(target_num)
-  values = [target_num]
+# calculates the dynamic programming table for this problem
+def calculate_table(target_num)
+  # this is our "table"
+  minimum_num_of_steps = [0]
 
-  until values.last == 1
-    current_value = values.last
+  (1..target_num).each do |num|
+    # set an initial value in our table to weigh against
+    minimum_num_of_steps[num] = Float::INFINITY
 
-    values << [ divide_by(current_value, 2),
-                divide_by(current_value, 3),
-                minus_one(current_value)
-              ].reject{ |n| n % 1 != 0 }
-              .min
-              .to_i
+    if num == 1
+      minimum_num_of_steps[num] = 0
+    else
+      # calculate values then get rid of decimals since they wouldn't make sense as indices
+      # consider that we're starting with integers anyway so float results don't really work
+      values = OPERATIONS.map { |op| self.send(op[0], num, op[1]) }
+      values.reject! { |v| v % 1 != 0 }
+      # for each valid operation's value, look at the number of steps for the index/number we're at
+      # and if it's lower than the current step count in the table overwrite it
+      values.each do |value|
+          # current_num_steps = minimum_num_of_steps[num - value] + 1
+          current_num_steps = minimum_num_of_steps[value] + 1
+
+          if current_num_steps < minimum_num_of_steps[num]
+            minimum_num_of_steps[num] = current_num_steps
+          end
+      end
+    end
   end
 
-  puts values.count - 1
-  puts values.reverse.join(' ')
+  minimum_num_of_steps
 end
 
 
 target_num = gets.to_i
-calculate_steps(target_num)
+dp_table = calculate_table(target_num)
+# steps = reconstruct()
+
+puts dp_table.last
+# puts steps.join(' ')
+# TODO: implement the reconstruction of the table
