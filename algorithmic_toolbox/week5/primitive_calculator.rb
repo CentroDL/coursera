@@ -1,12 +1,9 @@
-require 'pry'
-
 OPERATIONS = [
   [:divide, 2.0],
   [:divide, 3.0],
   [:subtract, 1]
 ]
 
-# sub problem
 def divide(x, y)
   x / y
 end
@@ -47,11 +44,27 @@ def calculate_table(target_num)
   minimum_num_of_steps
 end
 
+def reconstruct(table)
+  value = table.length - 1
+
+  steps = [value]
+
+  until value == 1
+    operations = OPERATIONS.map { |op| self.send(op[0], value, op[1]) }
+    operations.reject! { |v| v % 1 != 0 }
+
+    # select the key with the smallest amount of steps
+    value = operations.sort_by { |o| table[o] }.first.to_i
+    steps << value
+  end
+
+  steps.reverse
+end
+
 
 target_num = gets.to_i
 dp_table = calculate_table(target_num)
-# steps = reconstruct()
+steps = reconstruct(dp_table)
 
 puts dp_table.last
-# puts steps.join(' ')
-# TODO: implement the reconstruction of the table
+puts steps.join(' ')
