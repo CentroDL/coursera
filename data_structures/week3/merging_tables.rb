@@ -21,7 +21,7 @@ class TableMerger
       if count > self.max_pages
         self.max_pages = count
       end
-      puts max_pages 
+      puts max_pages
     end
   end
 
